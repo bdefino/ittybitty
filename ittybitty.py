@@ -20,7 +20,7 @@ class BitAccess:
     """faculty for easy manipulation of a bit array"""
     
     def __init__(self, octets = ''):
-        self._iterator_index = 0
+        self._current = 0
         
         if not isinstance(octets, bytearray):
             octets = bytearray(octets)
@@ -28,8 +28,8 @@ class BitAccess:
 
     def clear(self):
         """zero out the bits"""
-        for i in range(self.__len__()):
-            self.__setitem__(i, 0)
+        for i in range(len(self.octets)):
+            self.octets[i] = 0
     
     def __getitem__(self, i):
         return (self.octets[i / 8] >> (i % 8)) & 1
@@ -41,17 +41,16 @@ class BitAccess:
         return len(self.octets) * 8
 
     def next(self):
-        if self._iteration_index >= len(self.octets) << 3:
+        if self._current >= len(self.octets) << 3:
             raise StopIteration()
-        bit = (self.octets[self._iteration_index / 8]
-            >> (self._iteration_index % 8)) & 1
-        self._iteration_index += 1
+        bit = (self.octets[self._current / 8] >> (self._current % 8)) & 1
+        self._current += 1
         return bit
     
     def __setitem__(self, i, high):
         assert high in (0, 1), "high must evaluate to either 0 or 1"
         shift = i % 8
-        octet = self.octets[i / 8] & ~(1 << shift) # isolate index
+        octet = self.octets[i / 8] & ~(1 << shift) # zero out indexed bit
         self.octets[i / 8] = octet | (high << shift)
 
     def __str__(self):
