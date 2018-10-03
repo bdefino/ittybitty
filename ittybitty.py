@@ -33,6 +33,9 @@ class BitAccess:
     
     def __getitem__(self, i):
         return (self.octets[i / 8] >> (i % 8)) & 1
+    
+    def getoctet(self, i):
+        return self.octets[i]
 
     def __iter__(self):
         return self
@@ -52,6 +55,9 @@ class BitAccess:
         shift = i % 8
         octet = self.octets[i / 8] & ~(1 << shift) # zero out indexed bit
         self.octets[i / 8] = octet | (high << shift)
+    
+    def setoctet(self, i, value):
+        self.octets[i] = value & 255
 
     def __str__(self):
         return str(self.octets)
