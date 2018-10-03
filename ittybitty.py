@@ -46,7 +46,7 @@ class BitAccess:
     def next(self):
         if self._current >= len(self.octets) << 3:
             raise StopIteration()
-        bit = (self.octets[self._current / 8] >> (self._current % 8)) & 1
+        bit = self.__getitem__(self._current)
         self._current += 1
         return bit
     
